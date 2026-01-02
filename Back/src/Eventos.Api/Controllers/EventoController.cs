@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Eventos.Api.Data;
 using Eventos.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,39 +7,19 @@ namespace Eventos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]/")]
-public class EventoController : Controller
+public class EventoController(DataContext contexto) : Controller
 {
-	public IEnumerable<Evento> _eventos =
-	[
-		new()
-		{
-			EventoId = 1,
-			Tema = "Angular e .NET",
-			Local = "São Paulo",
-			Lote = "1o lote",
-			QtdPessoas = 250,
-			DataEvento = DateTime.Now.AddDays(2).ToString("dd/MM/yyyy")
-		},
-		new()
-		{
-			EventoId = 2,
-			Tema = "Angular e .NET",
-			Local = "São Paulo",
-			Lote = "2o lote",
-			QtdPessoas = 250,
-			DataEvento = DateTime.Now.AddDays(4).ToString("dd/MM/yyyy")
-		}
-	];
+	DataContext contexto =  contexto;
 	
 	[HttpGet]
 	public IEnumerable<Evento> Get()
 	{
-		return _eventos;
+		return contexto.Eventos.OrderBy(e => e.EventoId);
 	}
 	
 	[HttpGet("{id:int}")]
-	public IEnumerable<Evento> GetById(int id)
+	public Evento? GetById(int id)
 	{
-		return _eventos.Where(e => e.EventoId == id);
+		return contexto.Eventos.FirstOrDefault(e => e.EventoId == id);
 	}
 }
