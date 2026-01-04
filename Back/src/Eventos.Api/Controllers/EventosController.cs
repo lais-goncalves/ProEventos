@@ -7,7 +7,7 @@ namespace Eventos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]/")]
-public class EventoController(DataContext contexto) : Controller
+public class EventosController(DataContext contexto) : Controller
 {
 	DataContext contexto =  contexto;
 	

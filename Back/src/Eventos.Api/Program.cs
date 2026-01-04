@@ -6,6 +6,9 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder();
 
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options => { });
+
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -30,6 +33,13 @@ else
 
 app.UseRouting();
 app.UseAuthorization();
+
+app.UseCors(cors => cors
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("http://localhost:4200")
+           );
+
 app.UseEndpoints(endpoints =>
 {
 	endpoints.MapControllers();
