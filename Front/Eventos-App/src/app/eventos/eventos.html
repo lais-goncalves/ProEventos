@@ -1,13 +1,65 @@
-<h2>Eventos do Component</h2>
+<h2>Eventos</h2>
+<hr />
+<form action="" class="form-inline px-3">
+	<div class="form-group mb-2 row gap-2">
+		<input type="text" class="mr-2 col-md-3 col" placeholder="buscar">
+		<button class="btn btn-outline-success col-md-1 col">Buscar</button>
+	</div>
+</form>
 
-<!--<div *ngFor="let evento of eventos">-->
-<!--	<p>{{evento.Tema}}</p>-->
-<!--	<p>{{evento.Local}}</p>-->
-<!--</div>-->
+<table class="table table-striped">
+	<thead class="table-dark">
+		<tr>
+			<th>#</th>
+			<th>
+				<button
+					class="btn btn-primary"
+					(click)="alterarImagens()"
+				>{{!mostrarImagens ? "Ocultar" : "Mostrar"}}
+				</button>
+			</th>
+			<th>Tema</th>
+			<th>Local</th>
+			<th>Data</th>
+			<th>Qtd Pessoas</th>
+			<th>Lote</th>
+			<th>Opções</th>
+		</tr>
+	</thead>
 
-@for (evento of this.eventos; track evento.eventoId) {
-	<p><b>Id: </b>{{evento.eventoId}}</p>
-	<p><b>Tema: </b>{{evento.tema}}</p>
-	<p><b>Local: </b>{{evento.local}}</p>
-	<hr />
-}
+	@if (!!this.eventos && this.eventos.length > 0) {
+		<tbody>
+			@for (evento of this.eventos; track evento.eventoId) {
+				<tr class="table-bordered">
+					<td>{{evento.eventoId}}</td>
+					<td>
+						<img
+							src="assets/{{evento.imagemURL}}"
+							alt=""
+							[style.width.px]="largImagem"
+							[style.margin.px]="margImagem"
+							[collapse]="this.mostrarImagens"
+							[isAnimated]="true"
+						>
+					</td>
+					<td>{{evento.tema}}</td>
+					<td>{{evento.local}}</td>
+					<td>{{evento.dataEvento}}</td>
+					<td>{{evento.qtdPessoas}}</td>
+					<td>{{evento.lote}}</td>
+					<td>-</td>
+				</tr>
+			}
+		</tbody>
+	}
+
+	@else {
+		<tfoot>
+			<tr>
+				<td colspan="8" class="py-4">
+					<h4 class="text-center">Nenhum evento encontrado.</h4>
+				</td>
+			</tr>
+		</tfoot>
+	}
+</table>
