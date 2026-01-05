@@ -1,11 +1,11 @@
 <h2>Eventos</h2>
 <hr />
-<form action="" class="form-inline px-3">
+<div class="form-inline px-3">
 	<div class="form-group mb-2 row gap-2">
-		<input type="text" class="mr-2 col-md-3 col" placeholder="buscar">
-		<button class="btn btn-outline-success col-md-1 col">Buscar</button>
+		<label for="txtFiltro" class="mr-2 col-1 px-0">Filtro:</label>
+		<input id="txtFiltro" name="txtFiltro" type="text" class="mr-2 col-md-3 col" placeholder="buscar" [(ngModel)]="filtro">
 	</div>
-</form>
+</div>
 
 <table class="table table-striped">
 	<thead class="table-dark">
@@ -29,7 +29,7 @@
 
 	@if (!!this.eventos && this.eventos.length > 0) {
 		<tbody>
-			@for (evento of this.eventos; track evento.eventoId) {
+			@for (evento of this.eventosFiltrados; track evento.eventoId) {
 				<tr class="table-bordered">
 					<td>{{evento.eventoId}}</td>
 					<td>
@@ -47,7 +47,10 @@
 					<td>{{evento.dataEvento}}</td>
 					<td>{{evento.qtdPessoas}}</td>
 					<td>{{evento.lote}}</td>
-					<td>-</td>
+					<td>
+						<button class="btn btn-primary col mx-1">Editar</button>
+						<button class="btn btn-danger col mx-1">Excluir</button>
+					</td>
 				</tr>
 			}
 		</tbody>
