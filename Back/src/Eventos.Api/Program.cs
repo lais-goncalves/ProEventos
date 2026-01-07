@@ -1,4 +1,4 @@
-using Eventos.Api.Data;
+using Eventos.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -6,11 +6,10 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder();
 
 builder.Services.AddControllers();
-
-builder.Services.AddCors(options => { });
-
+builder.Services.AddCors();
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<DataContext>(options =>
+
+builder.Services.AddDbContext<EventosContext>(options =>
 {
 	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });

@@ -1,15 +1,14 @@
-using System.Diagnostics;
-using Eventos.Api.Data;
-using Eventos.API.Models;
+using Eventos.Domain;
+using Eventos.Persistence;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]/")]
-public class EventosController(DataContext contexto) : Controller
+public class EventosController(EventosContext contexto) : Controller
 {
-	DataContext contexto =  contexto;
+	EventosContext contexto =  contexto;
 	
 	[HttpGet]
 	public IEnumerable<Evento> Get()
