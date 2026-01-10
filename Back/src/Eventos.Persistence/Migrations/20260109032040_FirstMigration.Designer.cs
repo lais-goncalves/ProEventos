@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventos.Persistence.Migrations
 {
     [DbContext(typeof(EventosContext))]
-    [Migration("20260106215615_FirstMigration")]
+    [Migration("20260109032040_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace Eventos.Persistence.Migrations
 
             modelBuilder.Entity("Eventos.Domain.Evento", b =>
                 {
-                    b.Property<int>("EventoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -44,7 +44,7 @@ namespace Eventos.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("EventoId");
+                    b.HasKey("Id");
 
                     b.ToTable("Eventos");
                 });

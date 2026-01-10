@@ -19,7 +19,7 @@ public class EventoPersist(EventosContext context) : IEventoPersist
 			        .ThenInclude(pe => pe.Palestrante);
 		}
 		
-		query = query.OrderBy(e => e.EventoId);
+		query = query.AsNoTracking().OrderBy(e => e.Id);
 		
 		return await query.ToArrayAsync();
 	}
@@ -39,8 +39,9 @@ public class EventoPersist(EventosContext context) : IEventoPersist
 		}
 		
 		query = query
+		        .AsNoTracking()
 		        .Where(e => e.Tema.ToLower().Contains(tema.ToLower()))
-		        .OrderBy(e => e.EventoId);
+		        .OrderBy(e => e.Id);
 
 		return await query.ToArrayAsync();
 	}
@@ -58,7 +59,7 @@ public class EventoPersist(EventosContext context) : IEventoPersist
 			        .ThenInclude(pe => pe.Palestrante);
 		}
 
-		query = query.Where(e => e.EventoId == id);
+		query = query.AsNoTracking().Where(e => e.Id == id);
 		
 		return await query.FirstOrDefaultAsync();
 	}

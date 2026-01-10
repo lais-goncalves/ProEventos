@@ -19,7 +19,7 @@ namespace Eventos.Persistence.Migrations
 
             modelBuilder.Entity("Eventos.Domain.Evento", b =>
                 {
-                    b.Property<int>("EventoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -41,7 +41,7 @@ namespace Eventos.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("EventoId");
+                    b.HasKey("Id");
 
                     b.ToTable("Eventos");
                 });

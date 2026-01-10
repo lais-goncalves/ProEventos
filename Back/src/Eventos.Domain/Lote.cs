@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Eventos.Domain;
 
 public class Lote
@@ -9,5 +11,6 @@ public class Lote
 	public DateTime? DataFim { get; set; }
 	public int Quantidade { get; set; }
 	public int EventoId { get; set; }
+	[JsonIgnore]
 	public Evento Evento { get; set; }
 }

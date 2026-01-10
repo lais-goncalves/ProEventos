@@ -14,11 +14,12 @@ public class PalestrantePersist(EventosContext context) : IPalestrantePersist
 		if (includeEventos)
 		{
 			query = query
+			        .AsNoTracking()
 			        .Include(p => p.PalestranteEventos)
 			        .ThenInclude(pe => pe.Evento);
 		}
 		
-		query = query.OrderBy(p => p.Id);
+		query = query.AsNoTracking().OrderBy(p => p.Id);
 		
 		return await query.ToArrayAsync();
 	}
@@ -36,6 +37,7 @@ public class PalestrantePersist(EventosContext context) : IPalestrantePersist
 		}
 		
 		query = query
+					.AsNoTracking()
 					.Where(p => p.Nome.ToLower().Contains(nome.ToLower()))
 					.OrderBy(p => p.Id);
 		
@@ -54,7 +56,7 @@ public class PalestrantePersist(EventosContext context) : IPalestrantePersist
 			        .ThenInclude(pe => pe.Evento);
 		}
 
-		query = query.Where(p => p.Id == id);
+		query = query.AsNoTracking().Where(p => p.Id == id);
 		
 		return await query.FirstOrDefaultAsync();
 	}
