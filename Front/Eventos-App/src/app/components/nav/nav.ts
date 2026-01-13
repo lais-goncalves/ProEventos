@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import {CollapseDirective} from 'ngx-bootstrap/collapse';
 import {BsDropdownDirective, BsDropdownMenuDirective, BsDropdownToggleDirective} from 'ngx-bootstrap/dropdown';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -8,7 +9,9 @@ import {BsDropdownDirective, BsDropdownMenuDirective, BsDropdownToggleDirective}
 		CollapseDirective,
 		BsDropdownDirective,
 		BsDropdownToggleDirective,
-		BsDropdownMenuDirective
+		BsDropdownMenuDirective,
+		RouterLink,
+		RouterLinkActive
 	],
   templateUrl: './nav.html',
   styleUrl: './nav.scss',

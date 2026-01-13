@@ -1,8 +1,11 @@
 import {Component} from '@angular/core';
+import {Titulo} from "../../shared/titulo/titulo";
 
 @Component({
 	selector: 'app-palestrantes',
-	imports: [],
+    imports: [
+        Titulo
+    ],
 	templateUrl: './palestrantes.html',
 	styleUrl: './palestrantes.scss',
 })

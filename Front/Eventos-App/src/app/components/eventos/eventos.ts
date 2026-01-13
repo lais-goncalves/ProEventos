@@ -11,6 +11,7 @@ import {TooltipDirective} from 'ngx-bootstrap/tooltip';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {ToastrService} from 'ngx-toastr';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {Titulo} from '../../shared/titulo/titulo';
 
 @Component({
 	selector: 'app-eventos',
@@ -22,7 +23,8 @@ import {NgxSpinnerService} from 'ngx-spinner';
 		FormsModule,
 		FontAwesomeModule,
 		DateTimeFormatPipe,
-		TooltipDirective
+		TooltipDirective,
+		Titulo
 	]
 })
 
