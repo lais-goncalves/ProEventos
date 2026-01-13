@@ -1,10 +1,14 @@
 import { Component, HostListener } from '@angular/core';
 import {CollapseDirective} from 'ngx-bootstrap/collapse';
+import {BsDropdownDirective, BsDropdownMenuDirective, BsDropdownToggleDirective} from 'ngx-bootstrap/dropdown';
 
 @Component({
   selector: 'app-nav',
 	imports: [
-		CollapseDirective
+		CollapseDirective,
+		BsDropdownDirective,
+		BsDropdownToggleDirective,
+		BsDropdownMenuDirective
 	],
   templateUrl: './nav.html',
   styleUrl: './nav.scss',

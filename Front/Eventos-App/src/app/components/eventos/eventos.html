@@ -1,0 +1,94 @@
+<h2>Eventos</h2>
+<hr />
+<div class="form-inline px-3">
+	<div class="form-group mb-2 row gap-2">
+		<label for="txtFiltro" class="mr-2 col-1 px-0" tooltip="Editar" placement="right" [adaptivePosition]="false">Filtro:</label>
+		<input id="txtFiltro" name="txtFiltro" type="text" class="mr-2 col-md-3 col" placeholder="buscar" [(ngModel)]="filtro">
+	</div>
+</div>
+
+<table class="table table-striped">
+	<thead class="table-dark">
+		<tr>
+			<th>#</th>
+			<th>
+				<button
+					class="btn btn-primary"
+					(click)="alterarImagens()"
+				>
+					@if (this.mostrarImagens) {
+						<fa-icon [icon]="this.faEye" /> Mostrar
+					}
+
+					@else {
+						<fa-icon [icon]="this.faEyeSlash" /> Ocultar
+					}
+				</button>
+			</th>
+			<th>Tema</th>
+			<th>Local</th>
+			<th>Data</th>
+			<th>Qtd Pessoas</th>
+			<th>Lote</th>
+			<th>Opções</th>
+		</tr>
+	</thead>
+
+	@if (!!this.eventos && this.eventos.length > 0) {
+		<tbody>
+			@for (evento of this.eventosFiltrados; track evento.id) {
+				<tr class="table-bordered">
+					<td>{{evento.id}}</td>
+					<td>
+						<img
+							src="assets/{{evento.imagemURL}}"
+							alt=""
+							[style.width.px]="largImagem"
+							[style.margin.px]="margImagem"
+							[collapse]="this.mostrarImagens"
+							[isAnimated]="true"
+						>
+					</td>
+					<td>{{evento.tema}}</td>
+					<td>{{evento.local}}</td>
+					<td>{{(evento.dataEvento ?? 0) | dateTimeFormat}}</td>
+					<td>{{evento.qtdPessoas}}</td>
+					<td>
+						@for (lote of evento.lotes; track lote.id) {
+							<p>{{lote.id}}</p> @if ($index !== evento.lotes.length - 1) { <p>,</p> }
+						}
+					</td>
+					<td>
+						<div class="d-flex justify-content-center">
+							<button class="btn btn-primary btn-sm mx-1">
+								<fa-icon [icon]="faPenToSquare"></fa-icon>
+							</button>
+
+							<button class="btn btn-danger btn-sm mx-1" (click)="this.openModal(template)">
+								<fa-icon [icon]="faTrash"></fa-icon>
+							</button>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	}
+
+	@else {
+		<tfoot>
+			<tr>
+				<td colspan="8" class="py-4">
+					<h4 class="text-center">Nenhum evento encontrado.</h4>
+				</td>
+			</tr>
+		</tfoot>
+	}
+</table>
+
+<ng-template #template>
+	<div class="modal-body text-center">
+		<p>Deletar evento?</p>
+		<button type="button" class="btn btn-outline-danger" (click)="confirm()" >Sim</button>
+		<button type="button" class="btn" (click)="decline()" >Não</button>
+	</div>
+</ng-template>

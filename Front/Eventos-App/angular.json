@@ -31,7 +31,9 @@
 							}
 						],
 						"styles": [
-							"node_modules/bootstrap/dist/css/bootstrap.css",
+							"node_modules/ngx-spinner/animations/ball-pulse-sync.css",
+							"node_modules/ngx-spinner/animations/ball-spin-clockwise.css",
+							"node_modules/ngx-toastr/toastr.css",
 							"src/styles.scss"
 						],
 						"scripts": [
