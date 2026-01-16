@@ -34,6 +34,7 @@
 							"node_modules/ngx-spinner/animations/ball-pulse-sync.css",
 							"node_modules/ngx-spinner/animations/ball-spin-clockwise.css",
 							"node_modules/ngx-toastr/toastr.css",
+							"node_modules/bootswatch/dist/cosmo/bootstrap.min.css",
 							"src/styles.scss"
 						],
 						"scripts": [

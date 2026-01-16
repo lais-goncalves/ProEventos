@@ -33,6 +33,7 @@
 		"@fortawesome/angular-fontawesome": "^4.0.0",
 		"@fortawesome/free-solid-svg-icons": "^7.1.0",
 		"bootstrap": "^5.3.8",
+		"bootswatch": "^5.3.8",
 		"ngx-bootstrap": "^20.0.2",
 		"ngx-spinner": "^21.0.0",
 		"ngx-toastr": "^19.1.0",

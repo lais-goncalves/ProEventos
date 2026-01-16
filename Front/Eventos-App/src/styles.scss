@@ -1,19 +1,2 @@
-@import "../node_modules/bootstrap/dist/css/bootstrap.css";
-
-.popover {
-	position: absolute;
-	top: 0;
-	left: 0 #{"/* rtl:ignore */"};
-}
-
-.popover-arrow {
-	position: absolute;
-}
-
-.tooltip {
-	position: absolute;
-}
-
-.tooltip-arrow {
-	position: absolute;
-}
+@import "../node_modules/bootswatch/dist/cosmo/variables";
+@import "../node_modules/bootstrap/scss/bootstrap";
