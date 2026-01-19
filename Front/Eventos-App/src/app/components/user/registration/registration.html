@@ -3,52 +3,112 @@
 		<h1>Cadastro de Usuário</h1>
 
 		<div class="text-center col-md-12 my-auto side-heder">
-			<img src="../../../assets/registerImage.png" class="my-4" alt="" width="400px">
+			<img src="../../assets/registerImage.png" class="my-4" alt="" width="400px">
 		</div>
 	</div>
 
 	<div class="col-md-6">
-		<form class="p-1">
+		<form class="p-1" [formGroup]="form">
 			<div class="pb-2 d-block d-md-none">
 				<h3 class="border-bottom">Cadastro de Usuário</h3>
 			</div>
 			<div class="row">
 				<div class="col-12 col-sm-6 mb-4">
 					<label>Primeiro Nome</label>
-					<input type="text" class="form-control" placeholder="Insira o Primeiro nome" />
+					<input
+						type="text"
+						class="form-control"
+						formControlName="primeiroNome"
+						placeholder="Insira o Primeiro nome"
+						[ngClass]="{'is-invalid': f.primeiroNome?.errors && f.primeiroNome?.touched}"
+					/>
+					<div class="invalid-feedback">Primeiro nome é obrigatório.</div>
 				</div>
 				<div class="col-12 col-sm-6 mb-4">
 					<label>Último nome</label>
-					<input type="text" class="form-control" placeholder="Insira o Último nome" />
+					<input
+						type="text"
+						class="form-control"
+						formControlName="ultimoNome"
+						placeholder="Insira o Último nome"
+						[ngClass]="{'is-invalid': f.ultimoNome?.errors && f.ultimoNome?.touched}"
+					/>
+					<div class="invalid-feedback">Último nome é obrigatório.</div>
 				</div>
 			</div>
 			<div class="col mb-4">
-				<label for="">Email:</label>
-				<input class="form-control" type="text" placeholder="Insira o Nome Completo" />
+				<label for="">E-mail:</label>
+				<input
+					class="form-control"
+					type="text"
+					formControlName="email"
+					placeholder="Insira o Nome Completo"
+					[ngClass]="{'is-invalid': f.email?.errors && f.email?.touched}"
+				/>
+				@if (f.email?.errors?.required) {
+					<div class="invalid-feedback">E-mail é obrigatório.</div>
+				}
+
+				@if (f.email?.errors?.email) {
+					<div class="invalid-feedback">Deve ser um e-mail válido.</div>
+				}
 			</div>
 			<div class="col mb-4">
 				<label for="">Usuario:</label>
-				<input class="form-control" type="text" placeholder="Insira o nome de Usuário" />
+				<input
+					class="form-control"
+					type="text"
+					formControlName="usuario"
+					placeholder="Insira o nome de Usuário"
+					[ngClass]="{'is-invalid': f.usuario?.errors && f.usuario?.touched}"
+				/>
+				<div class="invalid-feedback">Usuário é obrigatório.</div>
 			</div>
 			<div class="row">
 				<div class="col-12 col-sm-6 mb-4">
 					<label for="">Senha:</label>
-					<input class="form-control" type="password" placeholder="Digite uma Senha" />
+					<input
+						class="form-control"
+						type="password"
+						formControlName="senha"
+						placeholder="Digite uma Senha"
+						[ngClass]="{'is-invalid': f.senha?.errors && f.senha?.touched}"
+					/>
+					@if (f.senha?.errors?.required) {
+						<div class="invalid-feedback">Senha é obrigatório.</div>
+					}
+
+					@else if (f.senha?.errors?.minlength) {
+						<div class="invalid-feedback">Deve ter no mínimo 6 caracteres.</div>
+					}
 				</div>
 				<div class="col-12 col-sm-6 mb-4">
 					<label for="">Confirmar Senha:</label>
-					<input class="form-control" type="password" placeholder="Confirme a Senha" />
+					<input
+						class="form-control"
+						type="password"
+						formControlName="confirmarSenha"
+						placeholder="Confirme a Senha"
+						[ngClass]="{'is-invalid': f.confirmarSenha?.errors && f.confirmarSenha?.touched}"
+					/>
+					@if (f.confirmarSenha?.errors?.required) {
+						<div class="invalid-feedback">Confirmar senha é obrigatório.</div>
+					}
+
+					@if (f.confirmarSenha?.errors?.senhasiguais) {
+						<div class="invalid-feedback">As senhas devem ser iguais.</div>
+					}
 				</div>
 			</div>
 			<div class="row mt-2 mb-4">
 				<div class="custom-control custom-checkbox">
-					<input type="checkbox" class="custom-control-input me-1" id="customCheck1">
+					<input type="checkbox" class="custom-control-input me-1" formControlName="termosServico" id="customCheck1">
 					<label class="custom-control-label">Eu concordo com os <a href="#">Termos de Uso</a>.</label>
 				</div>
 			</div>
 			<div class="row mb-4">
 				<div class="col">
-					<button class="btn btn-lg btn-success btn-block px-5 w-100">
+					<button class="btn btn-lg btn-success btn-block px-5 w-100" [disabled]="!this.form?.valid">
 						Registar
 					</button>
 				</div>

@@ -1,5 +1,5 @@
 import {Inject, LOCALE_ID, Pipe, PipeTransform} from '@angular/core';
-import {Constants} from '../../utils/constants/constants';
+import {Constants} from '@app/utils/constants/constants';
 import {DatePipe} from '@angular/common';
 
 @Pipe({

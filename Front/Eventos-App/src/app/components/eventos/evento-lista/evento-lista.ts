@@ -2,8 +2,8 @@ import {Component, OnInit, TemplateRef} from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import {CollapseDirective} from 'ngx-bootstrap/collapse';
 import {FormsModule} from '@angular/forms';
-import {EventoService} from '../../../_services/evento-service';
-import {Evento} from '../../../_models/evento';
+import {EventoService} from '@app/_services/evento-service';
+import {Evento} from '@app/_models/evento';
 import {FontAwesomeModule, IconDefinition} from '@fortawesome/angular-fontawesome';
 import {
 	faCalendarAlt,
@@ -13,7 +13,7 @@ import {
 	faPlusCircle,
 	faTrash
 } from '@fortawesome/free-solid-svg-icons';
-import {DateTimeFormatPipe} from '../../../helpers/DateTimeFormat/date-time-format-pipe';
+import {DateTimeFormatPipe} from '@app/helpers/DateTimeFormat/date-time-format-pipe';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {ToastrService} from 'ngx-toastr';
 import {NgxSpinnerService} from 'ngx-spinner';

@@ -1,4 +1,4 @@
-import {Evento} from '../_models/evento';
+import {Evento} from '@app/_models/evento';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';

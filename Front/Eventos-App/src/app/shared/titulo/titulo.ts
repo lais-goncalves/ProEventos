@@ -1,4 +1,4 @@
-import {Component, input, Input} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {FaIconComponent, IconDefinition} from '@fortawesome/angular-fontawesome';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import {Router} from '@angular/router';

@@ -7,6 +7,7 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {ToastrModule} from 'ngx-toastr';
 import {NgxSpinnerModule} from 'ngx-spinner';
+import {ReactiveFormsModule} from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
 			preventDuplicates: true,
 			progressBar: true
 		})),
-		importProvidersFrom(NgxSpinnerModule.forRoot())
+		importProvidersFrom(NgxSpinnerModule.forRoot()),
+		importProvidersFrom(ReactiveFormsModule)
 	]
 };

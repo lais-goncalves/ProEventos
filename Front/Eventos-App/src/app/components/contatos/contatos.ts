@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {Titulo} from '../../shared/titulo/titulo';
+import {Titulo} from '@app/shared/titulo/titulo';
 
 @Component({
   selector: 'app-contatos',
