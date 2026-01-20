@@ -1,11 +1,11 @@
 using Eventos.Application.Contratos;
-using Eventos.Domain;
+using Eventos.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventos.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class EventosController : Controller
 {
 	private readonly IEventosService _eventosService;
@@ -16,12 +16,12 @@ public class EventosController : Controller
 	}
 	
 	[HttpGet]
-	public async Task<ActionResult> GetAll()
+	public async Task<ActionResult> Get()
 	{
 		try
 		{
 			var eventos = await _eventosService.GetAllEventosAsync(true);
-			if (eventos == null) return NotFound("Nenhum evento encontrado");
+			if (eventos == null) return NoContent();
 			
 			return Ok(eventos);
 		}
@@ -33,12 +33,12 @@ public class EventosController : Controller
 	}
 	
 	[HttpGet("/id/{id:int}")]
-	public async Task<ActionResult> GetById(int id)
+	public async Task<ActionResult> Get(int id)
 	{
 		try
 		{
 			var evento = await _eventosService.GetEventoByIdAsync(id, true);
-			if (evento == null) return NotFound("Nenhum evento encontrado");
+			if (evento == null) return NoContent();
 			
 			return Ok(evento);
 		}
@@ -50,12 +50,12 @@ public class EventosController : Controller
 	}
 	
 	[HttpGet("/tema/{tema}")]
-	public async Task<ActionResult> GetByTema(string tema)
+	public async Task<ActionResult> Get(string tema)
 	{
 		try
 		{
 			var evento = await _eventosService.GetAllEventosByTemaAsync(tema, true);
-			if (evento == null) return NotFound("Nenhum evento encontrado");
+			if (evento == null) return NoContent();
 			
 			return Ok(evento);
 		}
@@ -67,12 +67,12 @@ public class EventosController : Controller
 	}
 	
 	[HttpPost]
-	public async Task<ActionResult> Post(Evento model)
+	public async Task<ActionResult> Post(EventoDto model)
 	{
 		try
 		{
 			var evento = await _eventosService.AddEvento(model);
-			if (evento == null) return BadRequest("Erro ao tentar adicionar evento.");
+			if (evento == null) return NoContent();
 			
 			return Ok(evento);
 		}
@@ -84,12 +84,12 @@ public class EventosController : Controller
 	}
 	
 	[HttpPut("/id/{id:int}")]
-	public async Task<ActionResult> Put(int id, Evento model)
+	public async Task<ActionResult> Put(int id, EventoDto model)
 	{
 		try
 		{
 			var evento = _eventosService.UpdateEvento(id, model);
-			if (evento == null) return BadRequest("Erro ao tentar modificar evento.");
+			if (evento == null) return NoContent();
 			
 			return Ok(evento);
 		}
@@ -106,7 +106,7 @@ public class EventosController : Controller
 		try
 		{
 			var deletouEvento = await _eventosService.DeleteEvento(id);
-			if (!deletouEvento) return BadRequest("Erro ao tentar deletar evento.");
+			if (!deletouEvento) return NoContent();
 			
 			return Ok("Evento deletado com sucesso.");
 		}

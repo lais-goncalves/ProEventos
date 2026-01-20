@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
 using Eventos.Application;
 using Eventos.Application.Contratos;
+using Eventos.Application.Helpers;
 using Eventos.Persistence;
 using Eventos.Persistence.Contratos;
 using Eventos.Persistence.Persists;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System.Text.Json;
 
 // BUILDER
 var builder = WebApplication.CreateBuilder();
@@ -24,6 +24,8 @@ builder.Services.AddDbContext<EventosContext>(options =>
 {
 	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddAutoMapper(typeof(ProEventosProfile).Assembly);
 
 builder.Services.AddScoped<IEventosService, EventoService>();
 builder.Services.AddScoped<IGeralPersist, GeralPersist>();

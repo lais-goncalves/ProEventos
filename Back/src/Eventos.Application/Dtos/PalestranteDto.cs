@@ -1,6 +1,6 @@
-namespace Eventos.Domain;
+namespace Eventos.Application.Dtos;
 
-public class Palestrante
+public class PalestranteDto
 {
 	public int Id { get; set; }
 	public string Nome { get; set; }
@@ -8,6 +8,7 @@ public class Palestrante
 	public string ImagemURL { get; set; }
 	public string Telefone { get; set; }
 	public string Email { get; set; }
-	public IEnumerable<RedeSocial> RedeSociais { get; set; }
-	public IEnumerable<PalestranteEvento> PalestranteEventos { get; set; }
+	
+	public IEnumerable<RedeSocialDto> RedeSociais { get; set; }
+	public IEnumerable<EventoDto> Eventos { get; set; }
 }
