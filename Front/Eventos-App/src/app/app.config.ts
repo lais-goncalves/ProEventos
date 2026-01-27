@@ -7,13 +7,15 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {ToastrModule} from 'ngx-toastr';
 import {NgxSpinnerModule} from 'ngx-spinner';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideBrowserGlobalErrorListeners(),
 		provideRouter(routes),
 		provideAnimations(),
+		importProvidersFrom(FormsModule),
+		importProvidersFrom(ReactiveFormsModule),
 		importProvidersFrom(BrowserAnimationsModule),
 		importProvidersFrom(TooltipModule.forRoot()),
 		importProvidersFrom(ModalModule.forRoot()),
@@ -24,6 +26,5 @@ export const appConfig: ApplicationConfig = {
 			progressBar: true
 		})),
 		importProvidersFrom(NgxSpinnerModule.forRoot()),
-		importProvidersFrom(ReactiveFormsModule)
 	]
 };

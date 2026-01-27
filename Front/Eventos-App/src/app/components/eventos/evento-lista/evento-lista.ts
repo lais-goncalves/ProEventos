@@ -18,6 +18,7 @@ import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {ToastrService} from 'ngx-toastr';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {Router, RouterLink} from '@angular/router';
+import {HttpResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-evento-lista',
@@ -45,6 +46,7 @@ export class EventoLista implements OnInit {
 
 	// JANELA CONFIRMAÇÃO
 	modalRef?: BsModalRef;
+	public eventoId: number | null = null;
 
 	// ÍCONES
 	public faEye: IconDefinition = faEye;
@@ -115,17 +117,44 @@ export class EventoLista implements OnInit {
 	}
 
 	// JANELA CONFIRMAÇÃO
-	openModal(template: TemplateRef<void>) {
+	openModal(event: any, template: TemplateRef<void>, eventoId: number) {
+		event.stopPropagation();
+		this.eventoId = eventoId;
 		this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
 	}
 
 	public confirm(): void {
 		this.modalRef?.hide();
-		this.toastr.success('O evento foi deletado com sucesso.',  'Deletado!');
+
+		if (!this.eventoId) {
+			this.toastr.error(`Ocorreu um erro ao tentar deletar o evento. Tente novamente`, 'Erro!');
+			return;
+		}
+
+		this.spinner.show();
+
+		this.eventoService.deleteEvento(this.eventoId).subscribe({
+			next: (response: any) => {
+				console.log(response)
+				this.spinner.hide();
+				this.toastr.success(`O evento ${this.eventoId} foi deletado com sucesso.`, 'Deletado!');
+			},
+			error: (err: any) => {
+				console.log(err)
+				this.spinner.hide();
+				this.toastr.error(`Ocorreu um erro ao tentar deletar o evento. Tente novamente`, 'Erro!');
+			},
+			complete: () => {
+				this.eventoId = null;
+				this.spinner.hide();
+				this.getEventos();
+			}
+		});
 	}
 
 	public decline(): void {
 		this.modalRef?.hide();
+		this.eventoId = null;
 	}
 
 	// DETALHES EVENTO

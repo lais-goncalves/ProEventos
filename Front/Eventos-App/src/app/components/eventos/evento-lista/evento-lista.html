@@ -67,7 +67,7 @@
 								[isAnimated]="true"
 							>
 						</td>
-						<td class="d-none d-md-table-cell">{{evento.tema}}</td>
+						<td class="d-none d-md-table-cell" style="word-break: break-word">{{evento.tema}}</td>
 						<td>{{evento.local}}</td>
 						<td>{{(evento.dataEvento ?? 0) | dateTimeFormat}}</td>
 						<td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
@@ -82,7 +82,7 @@
 									<fa-icon [icon]="faPenToSquare"></fa-icon>
 								</button>
 
-								<button class="btn btn-danger btn-sm mx-1" (click)="this.openModal(template)">
+								<button class="btn btn-danger btn-sm mx-1" (click)="this.openModal($event, template, evento.id)">
 									<fa-icon [icon]="faTrash"></fa-icon>
 								</button>
 							</div>
@@ -106,7 +106,7 @@
 
 <ng-template #template>
 	<div class="modal-body text-center">
-		<p>Deletar evento?</p>
+		<p>Deletar evento #{{this.eventoId}}?</p>
 		<button type="button" class="btn btn-outline-danger" (click)="confirm()" >Sim</button>
 		<button type="button" class="btn" (click)="decline()" >Não</button>
 	</div>

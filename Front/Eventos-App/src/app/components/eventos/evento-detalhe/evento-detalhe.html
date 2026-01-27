@@ -39,7 +39,7 @@
 				<div class="form-group col-md-4">
 					<label>Data e Hora</label>
 					<input
-						type="datetime"
+						type="datetime-local"
 						class="form-control"
 						formControlName="dataEvento"
 						placeholder=""
@@ -108,11 +108,11 @@
 			</div>
 		</div>
 		<div class="card-footer">
-			<div class="d-flex" (click)="this.resetarCampos()">
-				<button class="btn btn-outline-secondary me-auto border">
+			<div class="d-flex justify-content-between">
+				<button class="btn btn-outline-secondary border" (click)="this.resetarCampos()">
 					Cancelar Alteração
 				</button>
-				<button class="btn btn-success" [disabled]="!this.form.valid">
+				<button class="btn btn-success" (click)="this.salvarAlteracoes()" [disabled]="!this.form.valid">
 <!--					<span class="spinner-border spinner-border-sm me-1"></span>-->
 					Salvar Evento
 				</button>

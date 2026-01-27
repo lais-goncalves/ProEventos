@@ -1,2 +1,10 @@
 @import "../node_modules/bootswatch/dist/cosmo/variables";
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+form {
+	position: relative;
+}
+
+input {
+	position: relative;
+}
