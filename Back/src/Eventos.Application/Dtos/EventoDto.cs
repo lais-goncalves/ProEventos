@@ -12,7 +12,7 @@ public class EventoDto
 	 StringLength(50, MinimumLength = 4, ErrorMessage = "{0} deve ter no mínimo 3 caracteres e no máximo 50.")]
 	public string Tema { get; set; }
 	
-	[Range(120000, 1, ErrorMessage = "O campo {0} é obrigatório."),
+	[Range(1, 120000, ErrorMessage = "O campo {0} é obrigatório."),
 	 Display(Name = "Quantidade de Pessoas")]
 	public int QtdPessoas { get; set; }
 	

@@ -32,7 +32,7 @@ public class EventosController : Controller
 		}
 	}
 	
-	[HttpGet("/id/{id:int}")]
+	[HttpGet("id/{id:int}")]
 	public async Task<ActionResult> Get(int id)
 	{
 		try
@@ -49,7 +49,7 @@ public class EventosController : Controller
 		}
 	}
 	
-	[HttpGet("/tema/{tema}")]
+	[HttpGet("tema/{tema}")]
 	public async Task<ActionResult> Get(string tema)
 	{
 		try
@@ -83,7 +83,7 @@ public class EventosController : Controller
 		}
 	}
 	
-	[HttpPut("/id/{id:int}")]
+	[HttpPut("id/{id:int}")]
 	public async Task<ActionResult> Put(int id, EventoDto model)
 	{
 		try
@@ -100,7 +100,7 @@ public class EventosController : Controller
 		}
 	}
 	
-	[HttpDelete("/id/{id:int}")]
+	[HttpDelete("id/{id:int}")]
 	public async Task<ActionResult> Delete(int id)
 	{
 		try

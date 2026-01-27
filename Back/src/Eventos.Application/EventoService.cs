@@ -42,7 +42,7 @@ public class EventoService(
 		try
 		{
 			Evento? evento = await eventoPersister.GetEventoByIdAsync(eventoId);
-			if (evento == null) throw new Exception("Evento para delete não encontrado.");
+			if (evento.Id == null) throw new Exception("Evento para delete não encontrado.");
 			
 			geralPersister.Delete(evento);
 			return await geralPersister.SaveChangesAsync();
