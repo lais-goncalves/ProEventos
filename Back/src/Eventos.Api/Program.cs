@@ -27,8 +27,11 @@ builder.Services.AddDbContext<EventosContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(ProEventosProfile).Assembly);
 
+builder.Services.AddScoped<ILotesService, LoteService>();
 builder.Services.AddScoped<IEventosService, EventoService>();
 builder.Services.AddScoped<IGeralPersist, GeralPersist>();
+
+builder.Services.AddScoped<ILotePersist, LotePersist>();
 builder.Services.AddScoped<IEventoPersist, EventoPersist>();
 
 builder.Services.AddCors();

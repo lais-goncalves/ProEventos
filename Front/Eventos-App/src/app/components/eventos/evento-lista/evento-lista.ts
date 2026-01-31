@@ -61,7 +61,7 @@ export class EventoLista implements OnInit {
 	constructor(
 		private eventoService: EventoService,
 		private cd: ChangeDetectorRef,
-		private modalService: BsModalService,
+		private modal: BsModalService,
 		private toastr: ToastrService,
 		private spinner: NgxSpinnerService,
 		private router: Router,
@@ -120,7 +120,7 @@ export class EventoLista implements OnInit {
 	openModal(event: any, template: TemplateRef<void>, eventoId: number) {
 		event.stopPropagation();
 		this.eventoId = eventoId;
-		this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+		this.modalRef = this.modal.show(template, { class: 'modal-sm' });
 	}
 
 	public confirm(): void {

@@ -49,7 +49,7 @@
 						<select
 							class="form-control"
 							formControlName="titulo"
-							[ngClass]="{'is-invalid': f.titulo?.errors && f.titulo?.touched}"
+							[ngClass]="{'is-invalid': this.f.titulo?.errors && this.f.titulo?.touched}"
 						>
 							<option value=""></option>
 							<option value="tecnologo">Tecnologo(a)</option>

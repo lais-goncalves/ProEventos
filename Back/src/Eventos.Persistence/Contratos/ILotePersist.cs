@@ -2,9 +2,10 @@ using Eventos.Domain;
 
 namespace Eventos.Persistence.Contratos;
 
-public interface IEventoPersist
+public interface ILotePersist
 {
-	public Task<Evento[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false);
-	public Task<Evento[]> GetAllEventosAsync(bool includePalestrantes = false);
-	public Task<Evento?> GetEventoByIdAsync(int id, bool includePalestrantes = false);
+	public Task<Lote[]> GetAllLotesByEventoIdAsync(int eventoId);
+	public Task<Lote?> GetLoteByIdsAsync(int eventoId, int loteId);
+	public Task<bool> EventoExisteAsync(int eventoId);
+	public void ExecuteDeleteRangeAsync(int[] modelsIds);
 }

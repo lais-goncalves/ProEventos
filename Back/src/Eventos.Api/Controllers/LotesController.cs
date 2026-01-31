@@ -1,119 +1,69 @@
+using Eventos.Application.Dtos;
 using Eventos.Application.Contratos;
 using Eventos.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Eventos.Api.Controllers;
+namespace Lotes.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EventosController : Controller
+public class LotesController : Controller
 {
-	private readonly IEventosService _eventosService;
+	private readonly ILotesService _lotesService;
 
-	public EventosController(IEventosService eventosService)
+	public LotesController(ILotesService lotesService)
 	{
-		_eventosService = eventosService;
+		_lotesService = lotesService;
 	}
 	
-	[HttpGet]
-	public async Task<ActionResult> Get()
+	[HttpGet("evento_id/{eventoId}")]
+	public async Task<ActionResult> Get(int eventoId)
 	{
 		try
 		{
-			var eventos = await _eventosService.GetAllEventosAsync(true);
-			if (eventos == null) return NoContent();
+			var lotes = await _lotesService.GetLotesByEventoIdAsync(eventoId);
+			if (lotes == null) return NoContent();
 			
-			return Ok(eventos);
+			return Ok(lotes);
 		}
 		catch (Exception e)
 		{
 			return StatusCode(StatusCodes.Status500InternalServerError,
-			                       $"Erro ao tentar recuperar eventos. Erro: {e.Message}");
+			                  $"Erro ao tentar recuperar lotes. Erro: {e.Message}");
 		}
 	}
 	
-	[HttpGet("id/{id:int}")]
-	public async Task<ActionResult> Get(int id)
+	[HttpPut("evento_id/{eventoId:int}")]
+	public async Task<ActionResult> Put(int eventoId, LoteDto[] models)
 	{
 		try
 		{
-			var evento = await _eventosService.GetEventoByIdAsync(id, true);
-			if (evento == null) return NoContent();
+			var lote = _lotesService.SaveLotesAsync(eventoId, models);
+			if (lote == null) return NoContent();
 			
-			return Ok(evento);
+			return Ok(lote);
 		}
 		catch (Exception e)
 		{
 			return StatusCode(StatusCodes.Status500InternalServerError,
-			                  $"Erro ao tentar recuperar evento. Erro: {e.Message}");
+			                  $"Erro ao tentar modificar lote. Erro: {e.Message}");
 		}
 	}
 	
-	[HttpGet("tema/{tema}")]
-	public async Task<ActionResult> Get(string tema)
+	[HttpDelete("evento_id/{eventoId:int}/lote_id/{loteId:int}")]
+	public async Task<ActionResult> Delete(int eventoId, int loteId)
 	{
 		try
 		{
-			var evento = await _eventosService.GetAllEventosByTemaAsync(tema, true);
-			if (evento == null) return NoContent();
+			var deletouLote = await _lotesService.DeleteLoteAsync(eventoId, loteId);
+			if (!deletouLote) return NoContent();
 			
-			return Ok(evento);
+			return Ok("Lote deletado com sucesso.");
 		}
 		catch (Exception e)
 		{
 			return StatusCode(StatusCodes.Status500InternalServerError,
-			                  $"Erro ao tentar recuperar eventos. Erro: {e.Message}");
-		}
-	}
-	
-	[HttpPost]
-	public async Task<ActionResult> Post(EventoDto model)
-	{
-		try
-		{
-			var evento = await _eventosService.AddEvento(model);
-			if (evento == null) return NoContent();
-			
-			return Ok(evento);
-		}
-		catch (Exception e)
-		{
-			return StatusCode(StatusCodes.Status500InternalServerError,
-			                  $"Erro ao tentar cadastrar evento. Erro: {e.Message}");
-		}
-	}
-	
-	[HttpPut("id/{id:int}")]
-	public async Task<ActionResult> Put(int id, EventoDto model)
-	{
-		try
-		{
-			var evento = _eventosService.UpdateEvento(id, model);
-			if (evento == null) return NoContent();
-			
-			return Ok(evento);
-		}
-		catch (Exception e)
-		{
-			return StatusCode(StatusCodes.Status500InternalServerError,
-			                  $"Erro ao tentar modificar evento. Erro: {e.Message}");
-		}
-	}
-	
-	[HttpDelete("id/{id:int}")]
-	public async Task<ActionResult> Delete(int id)
-	{
-		try
-		{
-			var deletouEvento = await _eventosService.DeleteEvento(id);
-			if (!deletouEvento) return NoContent();
-			
-			return Ok("Evento deletado com sucesso.");
-		}
-		catch (Exception e)
-		{
-			return StatusCode(StatusCodes.Status500InternalServerError,
-			                  $"Erro ao tentar deletar evento. Erro: {e.Message}");
+			                  $"Erro ao tentar deletar lote. Erro: {e.Message}");
 		}
 	}
 }

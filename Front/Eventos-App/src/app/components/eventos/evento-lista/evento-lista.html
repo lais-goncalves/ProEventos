@@ -72,9 +72,16 @@
 						<td>{{(evento.dataEvento ?? 0) | dateTimeFormat}}</td>
 						<td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
 						<td class="d-none d-md-table-cell">
+							<p>
 							@for (lote of evento.lotes; track lote.id) {
-								<p>{{lote.id}}</p> @if ($index !== evento.lotes.length - 1) { <p>,</p> }
+								@if ($index !== evento.lotes.length - 1) {
+									{{lote.id+", "}}
+								}
+								@else {
+									{{lote.id}}
+									}
 							}
+							</p>
 						</td>
 						<td>
 							<div class="d-flex justify-content-center">

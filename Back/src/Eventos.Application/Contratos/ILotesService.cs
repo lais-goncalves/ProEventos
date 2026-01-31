@@ -3,13 +3,11 @@ using Eventos.Domain;
 
 namespace Eventos.Application.Contratos;
 
-public interface IEventosService
+public interface ILotesService
 {
-	Task<EventoDto> AddEvento(EventoDto model);
-	Task<EventoDto> UpdateEvento(int eventoId, EventoDto model);
-	Task<bool> DeleteEvento(int eventoId);
+	public Task<LoteDto[]> GetLotesByEventoIdAsync(int eventoId); 
+	public Task<LoteDto?> GetLoteByIdsAsync(int eventoId, int loteId);
 	
-	public Task<EventoDto[]> GetAllEventosAsync(bool includePalestrantes); 
-	public Task<EventoDto[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes);
-	public Task<EventoDto?> GetEventoByIdAsync(int id, bool includePalestrantes);
+	Task<LoteDto[]> SaveLotesAsync(int eventoId, LoteDto[] model);
+	Task<bool> DeleteLoteAsync(int eventoId, int loteId);
 }

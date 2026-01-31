@@ -6,29 +6,22 @@ using Eventos.Persistence.Contratos;
 
 namespace Eventos.Application;
 
-public class EventoService(
+public class LoteService(
 	IGeralPersist geralPersister, 
-	IEventoPersist eventoPersister,
+	ILotePersist lotePersister,
 	IMapper mapper
 	)
-	: IEventosService
+	: ILotesService
 {
-	public async Task<EventoDto?> AddEvento(EventoDto model)
+	
+	public async Task<LoteDto[]> GetLotesByEventoIdAsync(int eventoId)
 	{
 		try
 		{
-			var evento = mapper.Map<Evento>(model);
-			geralPersister.Add(evento);
-
-			if (await geralPersister.SaveChangesAsync())
-			{
-				var eventoResultado = await eventoPersister.GetEventoByIdAsync(evento.Id);
-				var eventoDtoResultado = mapper.Map<EventoDto>(eventoResultado);
-				
-				return eventoDtoResultado;
-			}
-
-			return null;
+			var lotes = await lotePersister.GetAllLotesByEventoIdAsync(eventoId);
+			var resultado = mapper.Map<LoteDto[]>(lotes);
+			
+			return resultado;
 		}
 		catch (Exception e)
 		{
@@ -36,15 +29,77 @@ public class EventoService(
 			throw new Exception(e.Message);
 		}
 	}
-	
-	public async Task<bool> DeleteEvento(int eventoId)
+
+	public async Task<LoteDto?> GetLoteByIdsAsync(int eventoId, int loteId)
 	{
 		try
 		{
-			Evento? evento = await eventoPersister.GetEventoByIdAsync(eventoId);
-			if (evento.Id == null) throw new Exception("Evento para delete não encontrado.");
+			var lote = await lotePersister.GetLoteByIdsAsync(eventoId, loteId);
+			var resultado = mapper.Map<LoteDto>(lote);
 			
-			geralPersister.Delete(evento);
+			return resultado;
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			throw new Exception(e.Message);
+		}
+	}
+
+	public async Task<LoteDto[]> SaveLotesAsync(int eventoId, LoteDto[] models)
+	{
+		try
+		{
+			bool eventoExiste = await lotePersister.EventoExisteAsync(eventoId);
+			if (!eventoExiste)
+			{
+				return [];
+			}
+			
+			// adiciona ou atualiza lotes
+			List<LoteDto> lotesResultantes = [];
+			foreach (var model in models)
+			{
+				LoteDto? loteAdicionado;
+					
+				if (model.Id == 0)
+				{
+					loteAdicionado = await AddLoteAsync(eventoId, model);
+				}
+				else
+				{
+					loteAdicionado = await UpdateLoteAsync(eventoId, model.Id, model);
+				}
+
+				if (loteAdicionado != null)
+				{
+					lotesResultantes.Add(loteAdicionado);
+				}
+			}
+
+			// remove lotes que não estão na lista para serem atualizados ou deletados
+			// ou seja, quando um lote é exluído da lista no frontend, ele vai ser excluído no backend
+			int[] idsLotesDeletados = await GetLotesNaoIncluidos(eventoId, lotesResultantes);
+			lotePersister.ExecuteDeleteRangeAsync(idsLotesDeletados);
+
+			return lotesResultantes.ToArray();
+		}
+		
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			throw new Exception(e.Message);
+		}
+	}
+	
+	public async Task<bool> DeleteLoteAsync(int eventoId, int loteId)
+	{
+		try
+		{
+			Lote? lote = await lotePersister.GetLoteByIdsAsync(eventoId, loteId);
+			if (lote?.Id == null) throw new Exception("Lote para delete não encontrado.");
+			
+			geralPersister.Delete(lote);
 			return await geralPersister.SaveChangesAsync();
 		}
 		catch (Exception e)
@@ -54,80 +109,80 @@ public class EventoService(
 		}
 	}
 	
-	public async Task<EventoDto?> UpdateEvento(int eventoId, EventoDto model)
+	private async Task DeleteLotesRangeAsync(IEnumerable<Lote> lotes)
+	{
+		geralPersister.DeleteRange(lotes.ToArray());
+	}
+
+	private async Task<int[]> GetLotesNaoIncluidos(int eventoId, IEnumerable<LoteDto> lotesIncluidos) {
+		LoteDto[] lotesEventoDto = await GetLotesByEventoIdAsync(eventoId);
+		Lote[] lotesEvento = mapper.Map<Lote[]>(lotesEventoDto);
+		
+		IEnumerable<Lote> lotesNaoIncluidos = lotesEvento.ExceptBy(
+		                                                           lotesIncluidos.Select(l => l.Id), 
+		                                                           l => l.Id
+		                                                          );
+
+		return lotesNaoIncluidos.Select(l => l.Id).ToArray();
+	}
+	
+	private async Task<LoteDto> UpdateLoteAsync(int eventoId, int loteId, LoteDto model)
 	{
 		try
 		{
-			Evento? evento = await eventoPersister.GetEventoByIdAsync(eventoId);
-			if (evento == null) return null;
-
-			model.Id = evento.Id;
-			mapper.Map(model, evento);
-
-			geralPersister.Update(evento);
-			if (await geralPersister.SaveChangesAsync())
+			LoteDto? loteDto = await GetLoteByIdsAsync(eventoId, loteId);
+			if (loteDto == null)
 			{
-				var eventoResultado = await eventoPersister.GetEventoByIdAsync(evento.Id);
-				var eventoDtoResultado = mapper.Map<EventoDto>(eventoResultado);
-				
-				return eventoDtoResultado;
+				throw new Exception($"Lote #{loteId} não encontrado.");
+			}
+			
+			Lote? lote = mapper.Map<Lote>(loteDto);
+			model.Id = loteId;
+			model.EventoId = eventoId;
+			mapper.Map(model, lote);
+			
+			geralPersister.Update(lote);
+			bool salvou = await geralPersister.SaveChangesAsync();
+			
+			if (!salvou)
+			{
+				throw new Exception($"Não foi possível salvar alterações do lote #{loteId}. Tente novamente.");
 			}
 
-			return null;
+			LoteDto? loteSalvo = await GetLoteByIdsAsync(eventoId, loteId);
+			return loteSalvo;
 		}
-		catch (Exception e)
+
+		catch (Exception ex)
 		{
-			Console.WriteLine(e);
-			throw new Exception(e.Message);
+			Console.WriteLine(ex);
+			throw ex;
 		}
 	}
-	
-	
-	public async Task<EventoDto[]> GetAllEventosAsync(bool includePalestrantes)
+
+	private async Task<LoteDto?> AddLoteAsync(int eventoId, LoteDto model)
 	{
 		try
 		{
-			var eventos = await eventoPersister.GetAllEventosAsync(includePalestrantes);
-			var resultado = mapper.Map<EventoDto[]>(eventos);
+			Lote? lote = mapper.Map<Lote>(model);
+			lote.EventoId = eventoId;
 			
-			return resultado;
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine(e);
-			throw new Exception(e.Message);
-		}
-	}
-	
-	public async Task<EventoDto[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes)
-	{
-		try
-		{
-			var eventos = await eventoPersister.GetAllEventosByTemaAsync(tema, includePalestrantes);
-			var resultado = mapper.Map<EventoDto[]>(eventos);
+			geralPersister.Add(lote);
+			bool salvou = await geralPersister.SaveChangesAsync();
 			
-			return resultado;
+			if (!salvou)
+			{
+				throw new Exception("Não foi possível cadastrar lote. Tente novamente");
+			}
+
+			LoteDto? loteCadastrado = await GetLoteByIdsAsync(eventoId, lote.Id);
+			return loteCadastrado;
 		}
-		catch (Exception e)
+		
+		catch (Exception ex)
 		{
-			Console.WriteLine(e);
-			throw new Exception(e.Message);
-		}
-	}
-	
-	public async Task<EventoDto?> GetEventoByIdAsync(int id, bool includePalestrantes)
-	{
-		try
-		{
-			var evento = await eventoPersister.GetEventoByIdAsync(id, includePalestrantes);
-			var resultado = mapper.Map<EventoDto>(evento);
-			
-			return resultado;
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine(e);
-			throw new Exception(e.Message);
+			Console.WriteLine(ex);
+			throw ex;
 		}
 	}
 }
