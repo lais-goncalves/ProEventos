@@ -59,7 +59,7 @@
 						<td>{{evento.id}}</td>
 						<td class="d-none d-md-table-cell">
 							<img
-								src="assets/{{evento.imagemURL}}"
+								src="{{this.mostrarImagem(evento.imagemURL)}}"
 								alt=""
 								[style.width.px]="largImagem"
 								[style.margin.px]="margImagem"

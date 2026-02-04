@@ -6,6 +6,7 @@ using Eventos.Persistence;
 using Eventos.Persistence.Contratos;
 using Eventos.Persistence.Persists;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Scalar.AspNetCore;
 
 // BUILDER
@@ -62,6 +63,12 @@ app.UseCors(cors => cors
                     .AllowAnyMethod()
                     .WithOrigins("http://localhost:4200")
            );
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+	FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
+	RequestPath = new PathString("/Resources")
+});
 
 app.UseEndpoints(endpoints =>
 {

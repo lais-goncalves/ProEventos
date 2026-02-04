@@ -19,6 +19,7 @@ import {ToastrService} from 'ngx-toastr';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {Router, RouterLink} from '@angular/router';
 import {HttpResponse} from '@angular/common/http';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-evento-lista',
@@ -160,5 +161,13 @@ export class EventoLista implements OnInit {
 	// DETALHES EVENTO
 	public detalheEvento(id: number): void {
 		this.router.navigate([`/eventos/detalhe/${id}`])
+	}
+
+	public mostrarImagem(imagemUrl: any): string {
+		if (!!imagemUrl && imagemUrl.trim().length > 0) {
+			return `${environment.apiURL}Resources/Images/${imagemUrl}`;
+		}
+
+		return 'assets/img/semImagem.jpeg';
 	}
 }

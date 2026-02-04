@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit, TemplateRef} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {JsonPipe, NgClass} from '@angular/common';
+import {JsonPipe, NgClass, NgOptimizedImage} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EventoService} from '@app/_services/evento-service';
 import {Evento} from '@app/_models/evento';
@@ -13,6 +13,8 @@ import {faPlusCircle, faWindowClose} from '@fortawesome/free-solid-svg-icons';
 import {Lote} from '@app/_models/lote';
 import {LoteService} from '@app/_services/lote-service';
 import {BsModalService} from 'ngx-bootstrap/modal';
+import {NgxCurrencyDirective} from 'ngx-currency';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-evento-detalhe',
@@ -21,18 +23,23 @@ import {BsModalService} from 'ngx-bootstrap/modal';
 		NgClass,
 		TooltipDirective,
 		FaIconComponent,
-		JsonPipe
+		JsonPipe,
+		NgxCurrencyDirective,
+		DateTimeFormatPipe,
+		NgOptimizedImage
 	],
   templateUrl: './evento-detalhe.html',
   styleUrl: './evento-detalhe.scss',
 })
 export class EventoDetalhe implements OnInit {
-	public eventoId: number | null = null;
+	public eventoAtual: Evento | null = null;
 	public loteId: number | null = null;
 
 	public form: FormGroup = new FormGroup({
 		lotes: new FormArray([])
 	});
+	public imagem: File | any | Array<any>;
+	public imagemUpload: any = 'assets/img/upload.png';
 
 	public readonly faPlusCircle = faPlusCircle;
 	public readonly faWindowClose = faWindowClose;
@@ -46,7 +53,7 @@ export class EventoDetalhe implements OnInit {
 	}
 
 	get modoEditar(): boolean {
-		return !!this.eventoId;
+		return !!this.eventoAtual && !!this.eventoAtual.id;
 	}
 
 	constructor(
@@ -68,7 +75,7 @@ export class EventoDetalhe implements OnInit {
 	}
 
 
-	private lotesControls(index: number, control: string): AbstractControl<any, any, any> | null {
+	private buscarControleLote(index: number, control: string): AbstractControl<any, any, any> | null {
 		return this.lotes.at(index).get(control);
 	}
 
@@ -82,7 +89,7 @@ export class EventoDetalhe implements OnInit {
 	}
 
 	public validarCampoLotes(index: number, control: string) {
-		return this.validarCampo(this.lotesControls(index, control));
+		return this.validarCampo(this.buscarControleLote(index, control));
 	}
 
 
@@ -91,9 +98,8 @@ export class EventoDetalhe implements OnInit {
 
 		if (!!paramId) {
 			this.spinner.show();
-			this.eventoId = +paramId;
 
-			this.eventosService.getEventoById(this.eventoId).subscribe({
+			this.eventosService.getEventoById(+paramId).subscribe({
 				next: (evento: Evento) => {
 
 					if (!evento) {
@@ -101,7 +107,13 @@ export class EventoDetalhe implements OnInit {
 						return;
 					}
 
-					this.form.patchValue(evento);
+					this.eventoAtual = evento;
+
+					if (evento.imagemURL.trim().length > 0) {
+						this.imagemUpload = `${environment.apiURL}Resources/Images/${evento.imagemURL}`
+					}
+
+					this.form.patchValue(this.eventoAtual);
 					this.definirValoresLotes(evento?.lotes);
 					this.spinner.hide();
 				},
@@ -155,7 +167,7 @@ export class EventoDetalhe implements OnInit {
 				this.spinner.hide();
 				this.toastr.success('Evento cadastrado com sucesso!', 'Successo!');
 
-				this._redirecionarParaPaginaDoEventoCadastrado(evento.Id);
+				this._redirecionarParaPaginaDoEventoCadastrado(evento.id);
 			},
 			error: () => {
 				this.spinner.hide();
@@ -165,14 +177,14 @@ export class EventoDetalhe implements OnInit {
 	}
 
 	private _atualizarEvento(evento: Evento): void {
-		if (!this.eventoId) {
+		if (!this.eventoAtual || !this.eventoAtual.id) {
 			this.toastr.error('Ocorreu um erro ao tentar cadastrar evento. Tente novamente.', 'Erro!');
 			return;
 		}
 
 		this.spinner.show();
 
-		this.eventosService.putEvento(this.eventoId, evento).subscribe({
+		this.eventosService.putEvento(this.eventoAtual.id, evento).subscribe({
 			next: () => {
 				this.spinner.hide();
 				this.toastr.success('Evento modificado com sucesso!', 'Successo!');
@@ -250,8 +262,8 @@ export class EventoDetalhe implements OnInit {
 	public salvarAlteracoesLotes(): void {
 		this.spinner.show();
 
-		if (this.lotes.valid && !!this.eventoId) {
-			this.lotesService.saveLotes(this.eventoId, this.form.value.lotes).subscribe({
+		if (this.lotes.valid && !!this.eventoAtual?.id) {
+			this.lotesService.saveLotes(this.eventoAtual.id, this.form.value.lotes).subscribe({
 				next: (retorno: any) => {
 					this.spinner.hide();
 					this.toastr.success("Lotes salvos com sucesso.", "Sucesso!");
@@ -263,7 +275,40 @@ export class EventoDetalhe implements OnInit {
 		}
 	}
 
-	public resetarCamposLotes() {
-		this.lotes.reset();
+	public definirTituloLote(index: number): string {
+		let nome: string = this.buscarControleLote(index, 'nome')?.value;
+		return !!nome ? nome : 'Nome do Lote';
+	}
+
+	public mudouImagem(event: any): void {
+		this.imagem = event.target.files[0];
+
+		const reader = new FileReader();
+		reader.onload = (readerEvent: any) => {
+			this.imagemUpload = readerEvent.target.result;
+			this.changeDetectorRef.detectChanges();
+		}
+
+		reader.readAsDataURL(this.imagem);
+		this.uploadImagem();
+	}
+
+	public uploadImagem(): void {
+		this.spinner.show();
+
+		if (!!this.eventoAtual?.id) {
+			this.eventosService.uploadImagem(this.eventoAtual?.id, this.imagem).subscribe({
+				next: (retorno: any) => {
+					this.buscarInformacoesDoEvento()
+					this.toastr.success("Imagem atualizada com sucesso.", "Sucesso!");
+				},
+				error: (erro: any) => {
+					console.log(erro);
+					this.toastr.success("Erro ao tentar atualizar imagem.", "Erro!");
+				}
+			});
+		}
+
+		this.spinner.hide();
 	}
 }

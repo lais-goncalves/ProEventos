@@ -8,6 +8,7 @@ import {ModalModule} from 'ngx-bootstrap/modal';
 import {ToastrModule} from 'ngx-toastr';
 import {NgxSpinnerModule} from 'ngx-spinner';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {NgxCurrencyDirective} from 'ngx-currency';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -26,5 +27,6 @@ export const appConfig: ApplicationConfig = {
 			progressBar: true
 		})),
 		importProvidersFrom(NgxSpinnerModule.forRoot()),
+		importProvidersFrom(NgxCurrencyDirective)
 	]
 };
