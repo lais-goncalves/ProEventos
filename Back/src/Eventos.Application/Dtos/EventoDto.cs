@@ -28,6 +28,8 @@ public class EventoDto
 	 Phone(ErrorMessage = "O campo {0} deve ser válido.")]
 	public string? Telefone { get; set; }
 	
+	public int UsuarioId { get; set; }
+	
 	public IEnumerable<LoteDto>? Lotes { get; set; }
 	public IEnumerable<RedeSocialDto>? RedesSociais { get; set; }
 	public IEnumerable<PalestranteDto>? Palestrantes { get; set; }

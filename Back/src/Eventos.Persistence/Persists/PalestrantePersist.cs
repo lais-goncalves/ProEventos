@@ -32,13 +32,15 @@ public class PalestrantePersist(EventosContext context) : IPalestrantePersist
 		if (includeEventos)
 		{
 			query = query
+			        .Include(p => p.Usuario)
+			        .ThenInclude(u => u.PrimeiroNome)
 			        .Include(p => p.PalestranteEventos)
 			        .ThenInclude(pe => pe.Evento);
 		}
 		
 		query = query
 					.AsNoTracking()
-					.Where(p => p.Nome.ToLower().Contains(nome.ToLower()))
+					.Where(p => p.Usuario.PrimeiroNome.Contains(nome, StringComparison.CurrentCultureIgnoreCase))
 					.OrderBy(p => p.Id);
 		
 		return await query.ToArrayAsync();

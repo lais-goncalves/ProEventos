@@ -13,16 +13,17 @@ public class EventoService(
 	)
 	: IEventosService
 {
-	public async Task<EventoDto?> AddEvento(EventoDto model)
+	public async Task<EventoDto?> AddEvento(int usuarioId, EventoDto model)
 	{
 		try
 		{
 			var evento = mapper.Map<Evento>(model);
+			evento.UsuarioId = usuarioId;
 			geralPersister.Add(evento);
 
 			if (await geralPersister.SaveChangesAsync())
 			{
-				var eventoResultado = await eventoPersister.GetEventoByIdAsync(evento.Id);
+				var eventoResultado = await eventoPersister.GetEventoByIdAsync(usuarioId, evento.Id);
 				var eventoDtoResultado = mapper.Map<EventoDto>(eventoResultado);
 				
 				return eventoDtoResultado;
@@ -37,11 +38,11 @@ public class EventoService(
 		}
 	}
 	
-	public async Task<bool> DeleteEvento(int eventoId)
+	public async Task<bool> DeleteEvento(int usuarioId, int eventoId)
 	{
 		try
 		{
-			Evento? evento = await eventoPersister.GetEventoByIdAsync(eventoId);
+			Evento? evento = await eventoPersister.GetEventoByIdAsync(usuarioId, eventoId);
 			if (evento.Id == null) throw new Exception("Evento para delete não encontrado.");
 			
 			geralPersister.Delete(evento);
@@ -54,20 +55,21 @@ public class EventoService(
 		}
 	}
 	
-	public async Task<EventoDto?> UpdateEvento(int eventoId, EventoDto model)
+	public async Task<EventoDto?> UpdateEvento(int usuarioId, int eventoId, EventoDto model)
 	{
 		try
 		{
-			Evento? evento = await eventoPersister.GetEventoByIdAsync(eventoId);
+			Evento? evento = await eventoPersister.GetEventoByIdAsync(usuarioId, eventoId);
 			if (evento == null) return null;
 
 			model.Id = evento.Id;
+			model.UsuarioId = usuarioId;
 			mapper.Map(model, evento);
 
 			geralPersister.Update(evento);
 			if (await geralPersister.SaveChangesAsync())
 			{
-				var eventoResultado = await eventoPersister.GetEventoByIdAsync(evento.Id);
+				var eventoResultado = await eventoPersister.GetEventoByIdAsync(usuarioId, evento.Id);
 				var eventoDtoResultado = mapper.Map<EventoDto>(eventoResultado);
 				
 				return eventoDtoResultado;
@@ -83,11 +85,11 @@ public class EventoService(
 	}
 	
 	
-	public async Task<EventoDto[]> GetAllEventosAsync(bool includePalestrantes)
+	public async Task<EventoDto[]> GetAllEventosAsync(int usuarioId, bool includePalestrantes)
 	{
 		try
 		{
-			var eventos = await eventoPersister.GetAllEventosAsync(includePalestrantes);
+			var eventos = await eventoPersister.GetAllEventosAsync(usuarioId, includePalestrantes);
 			var resultado = mapper.Map<EventoDto[]>(eventos);
 			
 			return resultado;
@@ -99,11 +101,11 @@ public class EventoService(
 		}
 	}
 	
-	public async Task<EventoDto[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes)
+	public async Task<EventoDto[]> GetAllEventosByTemaAsync(int usuarioId, string tema, bool includePalestrantes)
 	{
 		try
 		{
-			var eventos = await eventoPersister.GetAllEventosByTemaAsync(tema, includePalestrantes);
+			var eventos = await eventoPersister.GetAllEventosByTemaAsync(usuarioId, tema, includePalestrantes);
 			var resultado = mapper.Map<EventoDto[]>(eventos);
 			
 			return resultado;
@@ -115,11 +117,11 @@ public class EventoService(
 		}
 	}
 	
-	public async Task<EventoDto?> GetEventoByIdAsync(int id, bool includePalestrantes)
+	public async Task<EventoDto?> GetEventoByIdAsync(int usuarioId, int id, bool includePalestrantes)
 	{
 		try
 		{
-			var evento = await eventoPersister.GetEventoByIdAsync(id, includePalestrantes);
+			var evento = await eventoPersister.GetEventoByIdAsync(usuarioId, id, includePalestrantes);
 			var resultado = mapper.Map<EventoDto>(evento);
 			
 			return resultado;

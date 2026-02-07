@@ -1,9 +1,21 @@
 using Eventos.Domain;
+using Eventos.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Eventos.Persistence;
 
-public class EventosContext : DbContext
+public class EventosContext : IdentityDbContext<
+	Usuario, 
+	Papel, 
+	int, 
+	IdentityUserClaim<int>, 
+	PapelUsuario, 
+	IdentityUserLogin<int>, 
+	IdentityRoleClaim<int>, 
+	IdentityUserToken<int>
+>
 {
 	public DbSet<Evento> Eventos { get; set; }
 	public DbSet<Lote> Lotes { get; set; }
@@ -15,6 +27,23 @@ public class EventosContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		base.OnModelCreating(modelBuilder);
+
+		modelBuilder.Entity<PapelUsuario>(pu =>
+		{
+			pu.HasKey(pu => new { pu.UserId, pu.RoleId });
+			
+			pu.HasOne(pu => pu.Papel)
+			  .WithMany(p => p.PapeisUsuario)
+			  .HasForeignKey(pu => pu.RoleId)
+			  .IsRequired();
+			
+			pu.HasOne(pu => pu.Usuario)
+			  .WithMany(p => p.PapeisUsuario)
+			  .HasForeignKey(pu => pu.UserId)
+			  .IsRequired();
+		});
+		
 		// define chaves estrangeiras da classe,
 		// relacionando os eventos (com base no nome "EventoId") com os palestrantes (com base no nome "PalestranteId")
 		// Obs.: ele identifica automaticamente as colunas relacionadas com base no nome

@@ -1,15 +1,14 @@
 using Eventos.Application.Dtos;
-using Eventos.Domain;
 
 namespace Eventos.Application.Contratos;
 
 public interface IEventosService
 {
-	Task<EventoDto> AddEvento(EventoDto model);
-	Task<EventoDto> UpdateEvento(int eventoId, EventoDto model);
-	Task<bool> DeleteEvento(int eventoId);
+	Task<EventoDto> AddEvento(int usuarioId, EventoDto model);
+	Task<EventoDto> UpdateEvento(int usuarioId, int eventoId, EventoDto model);
+	Task<bool> DeleteEvento(int usuarioId, int eventoId);
 	
-	public Task<EventoDto[]> GetAllEventosAsync(bool includePalestrantes); 
-	public Task<EventoDto[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes);
-	public Task<EventoDto?> GetEventoByIdAsync(int id, bool includePalestrantes);
+	public Task<EventoDto[]> GetAllEventosAsync(int usuarioId, bool includePalestrantes); 
+	public Task<EventoDto[]> GetAllEventosByTemaAsync(int usuarioId, string tema, bool includePalestrantes);
+	public Task<EventoDto?> GetEventoByIdAsync(int usuarioId, int id, bool includePalestrantes);
 }

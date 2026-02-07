@@ -1,20 +1,29 @@
+using Eventos.Api.Extensions;
 using Eventos.Application.Contratos;
 using Eventos.Application.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventos.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EventosController : Controller
 {
 	private readonly IEventosService _eventosService;
 	private readonly IHostEnvironment _hostEnvironment;
+	private readonly IContaService _contaService;
 
-	public EventosController(IEventosService eventosService, IHostEnvironment hostEnvironment)
+	public EventosController(
+		IEventosService eventosService, 
+		IHostEnvironment hostEnvironment,
+		IContaService contaService
+	)
 	{
 		_eventosService = eventosService;
 		_hostEnvironment = hostEnvironment;
+		_contaService = contaService;
 	}
 	
 	[HttpGet]
@@ -22,7 +31,7 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var eventos = await _eventosService.GetAllEventosAsync(true);
+			var eventos = await _eventosService.GetAllEventosAsync(User.GetId(), true);
 			if (eventos == null) return NoContent();
 			
 			return Ok(eventos);
@@ -39,7 +48,7 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var evento = await _eventosService.GetEventoByIdAsync(id, true);
+			var evento = await _eventosService.GetEventoByIdAsync(User.GetId(), id, true);
 			if (evento == null) return NoContent();
 			
 			return Ok(evento);
@@ -56,7 +65,7 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var evento = await _eventosService.GetAllEventosByTemaAsync(tema, true);
+			var evento = await _eventosService.GetAllEventosByTemaAsync(User.GetId(), tema, true);
 			if (evento == null) return NoContent();
 			
 			return Ok(evento);
@@ -73,7 +82,7 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var evento = await _eventosService.AddEvento(model);
+			var evento = await _eventosService.AddEvento(User.GetId(), model);
 			if (evento == null) return NoContent();
 			
 			return Ok(evento);
@@ -90,7 +99,7 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var evento = await _eventosService.GetEventoByIdAsync(id, false);
+			var evento = await _eventosService.GetEventoByIdAsync(User.GetId(), id, false);
 			if (evento == null) return NoContent();
 
 			var file = Request.Form.Files[0];
@@ -101,7 +110,7 @@ public class EventosController : Controller
 			}
 
 			evento.Id = id;
-			var eventoRetorno = await _eventosService.UpdateEvento(id, evento);
+			var eventoRetorno = await _eventosService.UpdateEvento(User.GetId(), id, evento);
 			return Ok(eventoRetorno);
 		}
 		catch (Exception e)
@@ -116,7 +125,7 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var evento = _eventosService.UpdateEvento(id, model);
+			var evento = _eventosService.UpdateEvento(User.GetId(), id, model);
 			if (evento == null) return NoContent();
 			
 			return Ok(evento);
@@ -133,8 +142,13 @@ public class EventosController : Controller
 	{
 		try
 		{
-			var deletouEvento = await _eventosService.DeleteEvento(id);
+			var evento = await _eventosService.GetEventoByIdAsync(User.GetId(), id, false);
+			if (evento == null) return NoContent();
+			
+			var deletouEvento = await _eventosService.DeleteEvento(User.GetId(), id);
 			if (!deletouEvento) return NoContent();
+
+			DeleteImagem(evento.ImagemURL);
 			
 			return Ok("Evento deletado com sucesso.");
 		}
